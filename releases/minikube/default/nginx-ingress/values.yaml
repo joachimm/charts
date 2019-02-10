@@ -1,0 +1,11 @@
+controller:
+  replicaCount: 1
+
+  stats:
+    enabled: true
+
+  metrics:
+    enabled: true
+
+  publishService:
+    enabled: true

@@ -1,0 +1,32 @@
+
+
+
+# so it's not moved to another node, download iso & rootfs
+# nodeName: srv1
+
+# force listening and advertising on ip (in case of multiple NIC). Required nodeName
+# ip: 192.168.0.1
+
+
+replicas: 1
+
+images:
+    updateIntervalInSecond: 300 
+
+image:
+  repository: quay.io/coreos/matchbox
+  tag: v0.7.1
+
+hostNetwork: false
+
+service:
+  type: NodePort
+  httpNodePort: ~
+
+
+matchbox:
+  groups: {}
+  profiles: {}
+  generic: {}
+  assetsScripts: {}
+  runScripts: {}

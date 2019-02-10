@@ -1,0 +1,213 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+WORK_PATH=${WORK_PATH:-.}
+DRY_RUN=${DRY_RUN:-}
+
+TILLER_HISTORY_MAX=2
+TILLER_REPLICATS=1
+
+echo_green() {
+    echo -e "\033[0;32m$*\033[0m" 1>&2
+}
+
+echo_red() {
+    echo -e "\033[0;31m$*\033[0m" 1>&2
+}
+
+echo_purple() {
+    echo -e "\033[0;35m$*\033[0m" 1>&2
+}
+
+echo_yellow() {
+    echo -e "\033[0;33m$*\033[0m"  1>&2
+}
+
+
+#########################
+
+run_tiller-upgrade() {
+      cat <<RBAC | kubectl $DRY_RUN --context=$CONTEXT apply --wait -f -
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tiller
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tiller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: tiller
+    namespace: kube-system
+RBAC
+
+    helm $DRY_RUN --kube-context=$CONTEXT init --upgrade --force-upgrade --wait --history-max=$TILLER_HISTORY_MAX --replicas=$TILLER_REPLICATS --service-account=tiller
+}
+
+run_delete() {
+    helm $DRY_RUN --kube-context=$CONTEXT delete --purge $RELEASE
+}
+
+
+run_fetch() {
+    # TODO download chart
+    if [ ! -d $CHART ]; then
+        local TARGET_DIR=$HOME/.cache/release/$CHART
+        CHART
+        mkdir -p $TARGET_DIR
+
+        helm --kube-context=$CONTEXT fetch --untar --untardir $TARGET_DIR $CHART --version $CHART_VERSION
+    fi
+}
+
+run_validate() {
+    echo_green "Running kubeval"
+    run_template | kubeval --strict
+    echo_green "Running kube-score"
+    run_template | kube-score score -
+}
+
+run_template() {
+    HELM_CMD=("helm --kube-context=$CONTEXT template --name=$RELEASE $CHART --namespace=$NAMESPACE")
+    for i in $(ls "$WORK_PATH"/*.yaml 2>/dev/null); do
+      HELM_CMD+=("-f $i")
+    done
+
+    exec ${HELM_CMD[@]}
+}
+
+run_upgrade() {
+    # support first release bug
+    if helm --kube-context=$CONTEXT list -c $RELEASE --output yaml | grep -q "Status: FAILED" &&
+        helm --kube-context=$CONTEXT list -c $RELEASE --output yaml | grep -q "Revision: 1"; then
+        echo_green "Delete first FAILED release for $RELEASE"
+        helm $DRY_RUN --kube-context=$CONTEXT delete --purge $RELEASE
+    fi
+
+    if ! kubectl get namespace $NAMESPACE >/dev/null 2>&1; then
+        echo_green "Creating namespace $NAMESPACE"
+        kubectl $DRY_RUN --context=$CONTEXT create namespace $NAMESPACE
+    fi
+
+    local FILES=
+    for i in $(ls "$WORK_PATH"/*.yaml 2>/dev/null); do
+      FILES+=("-f $i")
+    done
+
+    local VERSION=
+    if [[ -n "${CHART_VERSION:-}" ]]; then
+      VERSION="--version ${CHART_VERSION}"
+    fi
+
+    exec helm $DRY_RUN --kube-context=$CONTEXT upgrade --install --wait --timeout=120 ${FILES[@]} ${VERSION} --namespace $NAMESPACE $RELEASE $CHART
+}
+
+
+run_diff() {
+    local FILES=
+    for i in $(ls "$WORK_PATH"/*.yaml 2>/dev/null); do
+      FILES+=("-f $i")
+    done
+    exec helm --kube-context=$CONTEXT diff upgrade --allow-unreleased ${FILES[@]} --context=8 $RELEASE $CHART
+}
+
+#########################
+
+if [ -f $WORK_PATH/../../../release-root-env.sh ]; then
+    # in release
+    readonly RELEASE_ROOT=$(realpath $WORK_PATH/../../..)
+    readonly CONTEXT=$(basename $(realpath $WORK_PATH/../..))
+    readonly NAMESPACE=$(basename $(realpath $WORK_PATH/..))
+    readonly RELEASE=$(basename $(realpath $WORK_PATH))
+elif [ -f $WORK_PATH/../../release-root-env.sh ]; then
+    # in namespace
+    readonly RELEASE_ROOT=$(realpath $WORK_PATH/../..)
+    readonly CONTEXT=$(basename $(realpath $WORK_PATH/..))
+    readonly NAMESPACE=$(basename $(realpath $WORK_PATH))
+    readonly RELEASE=
+elif [ -f $WORK_PATH/../release-root-env.sh ]; then
+    # in cluster
+    readonly RELEASE_ROOT=$(realpath $WORK_PATH/..)
+    readonly CONTEXT=$(basename $(realpath $WORK_PATH))
+    readonly NAMESPACE=
+    readonly RELEASE=
+else
+    echo_red "Cannot find root releases directory with 'release-root-env.sh' file. Run in <cluster|namespace|release> directory"
+    exit 1
+fi
+
+if [ ! -z $DRY_RUN ]; then
+    DRY_RUN="--dry-run"
+fi
+
+source $RELEASE_ROOT/release-root-env.sh
+
+if ! kubectl config get-contexts --no-headers -o name | grep -q $CONTEXT ; then
+    echo_red "Kube context do not exists : $CONTEXT"
+    exit 1
+fi
+
+if [ -z $RELEASE ]; then
+    depth=1
+    if [ -z $NAMESPACE ]; then
+        depth=2
+    fi
+    for i in $(find $WORK_PATH -mindepth $depth -maxdepth $depth -type d | sed -e "s?$WORK_PATH/??"); do
+        echo_purple "Running release $@ on $i"
+        WORK_PATH=$WORK_PATH/$i bash -$- $0 $@
+        # WORK_PATH=$WORK_PATH/$i . $0 $@
+    done
+
+    exit 0
+fi
+
+if [ -f "$WORK_PATH/release-env.sh" ]; then
+    source "$WORK_PATH/release-env.sh"
+fi
+
+if [[ -z "${CHART:-}" ]]; then
+  echo_yellow "No CHART found in '$WORK_PATH/release-env.sh', creating chart dynamically"
+  readonly TMP_CHART=$(mktemp -d /tmp/.XXXXXX)
+  mkdir $TMP_CHART/templates
+
+  if ! ls $WORK_PATH/*.yaml > /dev/null 2>&1; then
+    echo_red "No manifest yaml file found in '$WORK_PATH' to put in chart"
+    exit 1
+  fi  
+  cp -r $WORK_PATH/*.yaml $TMP_CHART/templates
+
+  cat >$TMP_CHART/Chart.yaml <<EOL
+apiVersion: v1
+name: $RELEASE
+version: 0.1.0
+EOL
+
+  CHART=$TMP_CHART
+fi
+
+
+# TODO rework
+commands=()
+while [ $# -gt 0 ]; do
+    case "$1" in
+    *)          commands+=("$1"); shift;;
+    esac
+done
+
+if [ ${#commands[@]} -eq 0 ]; then
+    commands=()
+fi
+for i in "${commands[@]}"; do
+    case $i in
+        delete|upgrade|diff|template|validate|tiller-upgrade)   run_$i;;
+        update)     run_upgrade;;
+        *)              echo_red "Unknown command '$i'"; exit 1;;
+    esac
+done

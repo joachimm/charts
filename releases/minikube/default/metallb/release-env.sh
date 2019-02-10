@@ -1,0 +1,1 @@
+CHART="stable/metallb"
