@@ -27,7 +27,7 @@ echo_yellow() {
 #########################
 
 run_tiller-upgrade() {
-      cat <<RBAC | kubectl $DRY_RUN --context=$CONTEXT apply --wait -f -
+      cat <<RBAC | KUBECONFIG=$RELEASE_KUBECONFIG kubectl $DRY_RUN apply --wait -f -
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -48,11 +48,11 @@ subjects:
     namespace: kube-system
 RBAC
 
-    helm $DRY_RUN --kube-context=$CONTEXT init --upgrade --force-upgrade --wait --history-max=$TILLER_HISTORY_MAX --replicas=$TILLER_REPLICATS --service-account=tiller
+    KUBECONFIG=$RELEASE_KUBECONFIG helm $DRY_RUN init --upgrade --force-upgrade --wait --history-max=$TILLER_HISTORY_MAX --replicas=$TILLER_REPLICATS --service-account=tiller
 }
 
 run_delete() {
-    helm $DRY_RUN --kube-context=$CONTEXT delete --purge $RELEASE
+    KUBECONFIG=$RELEASE_KUBECONFIG helm $DRY_RUN delete --purge $RELEASE
 }
 
 
@@ -63,7 +63,7 @@ run_fetch() {
         CHART
         mkdir -p $TARGET_DIR
 
-        helm --kube-context=$CONTEXT fetch --untar --untardir $TARGET_DIR $CHART --version $CHART_VERSION
+        KUBECONFIG=$RELEASE_KUBECONFIG helm fetch --untar --untardir $TARGET_DIR $CHART --version $CHART_VERSION
     fi
 }
 
@@ -75,7 +75,7 @@ run_validate() {
 }
 
 run_template() {
-    HELM_CMD=("helm --kube-context=$CONTEXT template --name=$RELEASE $CHART --namespace=$NAMESPACE")
+    HELM_CMD=("env KUBECONFIG=$RELEASE_KUBECONFIG helm template --name=$RELEASE_RELEASE $CHART --namespace=$RELEASE_NAMESPACE")
     for i in $(ls "$WORK_PATH"/*.yaml 2>/dev/null); do
       HELM_CMD+=("-f $i")
     done
@@ -85,15 +85,19 @@ run_template() {
 
 run_upgrade() {
     # support first release bug
-    if helm --kube-context=$CONTEXT list -c $RELEASE --output yaml | grep -q "Status: FAILED" &&
-        helm --kube-context=$CONTEXT list -c $RELEASE --output yaml | grep -q "Revision: 1"; then
-        echo_green "Delete first FAILED release for $RELEASE"
-        helm $DRY_RUN --kube-context=$CONTEXT delete --purge $RELEASE
+    if KUBECONFIG=$RELEASE_KUBECONFIG helm list -c $RELEASE_RELEASE --output yaml | grep -q "Status: FAILED" &&
+        KUBECONFIG=$RELEASE_KUBECONFIG helm list -c $RELEASE_RELEASE --output yaml | grep -q "Revision: 1"; then
+        echo_green "Delete first FAILED release for $RELEASE_RELEASE"
+        KUBECONFIG=$RELEASE_KUBECONFIG helm $DRY_RUN delete --purge $RELEASE_RELEASE
     fi
 
-    if ! kubectl get namespace $NAMESPACE >/dev/null 2>&1; then
-        echo_green "Creating namespace $NAMESPACE"
-        kubectl $DRY_RUN --context=$CONTEXT create namespace $NAMESPACE
+    if [ -f $RELEASE_ROOT/${RELEASE_CLUSTER}/${RELEASE_NAMESPACE}/namespace.yaml ]; then
+        KUBECONFIG=$RELEASE_KUBECONFIG kubectl $DRY_RUN apply -f $RELEASE_ROOT/${RELEASE_CLUSTER}/${RELEASE_NAMESPACE}/namespace.yaml
+    fi
+
+    if ! KUBECONFIG=$RELEASE_KUBECONFIG kubectl  get namespace $RELEASE_NAMESPACE >/dev/null 2>&1; then
+        echo_green "Creating namespace $RELEASE_NAMESPACE"
+        KUBECONFIG=$RELEASE_KUBECONFIG kubectl $DRY_RUN create namespace $RELEASE_NAMESPACE
     fi
 
     local FILES=
@@ -106,7 +110,7 @@ run_upgrade() {
       VERSION="--version ${CHART_VERSION}"
     fi
 
-    exec helm $DRY_RUN --kube-context=$CONTEXT upgrade --install --wait --timeout=120 ${FILES[@]} ${VERSION} --namespace $NAMESPACE $RELEASE $CHART
+    exec env KUBECONFIG=$RELEASE_KUBECONFIG helm $DRY_RUN upgrade --install --wait --timeout=120 ${FILES[@]} ${VERSION} --namespace $RELEASE_NAMESPACE $RELEASE_RELEASE $CHART
 }
 
 
@@ -115,33 +119,121 @@ run_diff() {
     for i in $(ls "$WORK_PATH"/*.yaml 2>/dev/null); do
       FILES+=("-f $i")
     done
-    exec helm --kube-context=$CONTEXT diff upgrade --allow-unreleased ${FILES[@]} --context=8 $RELEASE $CHART
+    exec env KUBECONFIG=$RELEASE_KUBECONFIG helm diff upgrade --allow-unreleased ${FILES[@]} --context=8 $RELEASE_RELEASE $CHART
+}
+
+run_context() {
+    rootPath=
+    path=$(realpath -s "$WORK_PATH")
+    current=$(realpath -s "$WORK_PATH")
+    while true; do
+        if [ "$path" == "/" ]; then
+            break
+        fi
+        if [ -f "$path/release-root-env.sh" ]; then
+            rootPath="$path"
+            break
+        fi
+        path=$(realpath -s "$path/..")
+    done
+
+    inRunPath=${current#$rootPath*}
+    if [ "$inRunPath" != "$current" ] &&
+      (( $(echo $inRunPath | tr -cd / | wc -c) >= 1 )); then
+        RELEASE_ROOT="${rootPath}"
+        RELEASE_CLUSTER=$(echo "$inRunPath" | awk -F/ '{print $2}')
+        RELEASE_NAMESPACE=$(echo "$inRunPath" | awk -F/ '{print $3}')
+        RELEASE_RELEASE=$(echo "$inRunPath" | awk -F/ '{print $4}')
+        # if [ ${RELEASE_PROJECT:-} ] && [ ${RELEASE_CLUSTER:-} ]; then
+            RELEASE_KUBECONFIG=$RELEASE_ROOT/.kube/admin.conf
+        # fi
+    fi
+
+    echo RELEASE_ROOT=${RELEASE_ROOT:-}
+    echo RELEASE_CLUSTER=${RELEASE_CLUSTER:-}
+    echo RELEASE_NAMESPACE=${RELEASE_NAMESPACE:-}
+    echo RELEASE_RELEASE=${RELEASE_RELEASE:-}
+    echo RELEASE_KUBECONFIG=${RELEASE_KUBECONFIG:-}
+}
+
+
+prepare() {
+    # if ! kubectl config get-contexts --no-headers -o name | grep -q $CONTEXT ; then
+    #     echo_red "Kube context do not exists : $CONTEXT"
+    #     exit 1
+    # fi
+
+    if [ -z $RELEASE_RELEASE ]; then
+        depth=1
+        if [ -z $RELEASE_NAMESPACE ]; then
+            depth=2
+        fi
+        for i in $(find -L $WORK_PATH -mindepth $depth -maxdepth $depth -type d | sed -e "s?$WORK_PATH/??"); do
+            echo_purple "Running release $@ on $i"
+            WORK_PATH=$WORK_PATH/$i bash -$- $0 $@
+            # WORK_PATH=$WORK_PATH/$i . $0 $@
+        done
+
+        exit 0
+    fi
+
+    if [ -f "$WORK_PATH/release-env.sh" ]; then
+        source "$WORK_PATH/release-env.sh"
+    fi
+
+
+    if [[ -z "${CHART:-}" ]]; then
+    echo_yellow "No CHART found in '$WORK_PATH/release-env.sh', creating chart dynamically"
+    readonly TMP_CHART=$(mktemp -d /tmp/.XXXXXX)
+    mkdir $TMP_CHART/templates
+
+    if [[ ! -z "${MANIFESTS:-}" ]]; then
+        (cd $TMP_CHART/templates && curl -O "${MANIFESTS}")
+    else
+        if ! ls $WORK_PATH/*.yaml > /dev/null 2>&1; then
+            echo_red "No manifest yaml file found in '$WORK_PATH' to put in chart"
+            exit 1
+        fi  
+        cp -r $WORK_PATH/*.yaml $TMP_CHART/templates
+    fi
+
+    cat >$TMP_CHART/Chart.yaml <<EOL
+apiVersion: v1
+name: $RELEASE_RELEASE
+version: 0.1.0
+EOL
+
+    CHART=$TMP_CHART
+    fi
 }
 
 #########################
 
-if [ -f $WORK_PATH/../../../release-root-env.sh ]; then
-    # in release
-    readonly RELEASE_ROOT=$(realpath $WORK_PATH/../../..)
-    readonly CONTEXT=$(basename $(realpath $WORK_PATH/../..))
-    readonly NAMESPACE=$(basename $(realpath $WORK_PATH/..))
-    readonly RELEASE=$(basename $(realpath $WORK_PATH))
-elif [ -f $WORK_PATH/../../release-root-env.sh ]; then
-    # in namespace
-    readonly RELEASE_ROOT=$(realpath $WORK_PATH/../..)
-    readonly CONTEXT=$(basename $(realpath $WORK_PATH/..))
-    readonly NAMESPACE=$(basename $(realpath $WORK_PATH))
-    readonly RELEASE=
-elif [ -f $WORK_PATH/../release-root-env.sh ]; then
-    # in cluster
-    readonly RELEASE_ROOT=$(realpath $WORK_PATH/..)
-    readonly CONTEXT=$(basename $(realpath $WORK_PATH))
-    readonly NAMESPACE=
-    readonly RELEASE=
-else
+if [ "$#" -ne 1 ]; then
+    echo_red "No command set, or too many commands"
+    exit 1
+fi
+
+case $1 in
+    tiller-upgrade|context)
+        run_$1
+        exit 0
+        ;;
+    delete|upgrade|diff|template|validate|tiller-upgrade|context)
+        prepare
+        run_$1
+        ;;
+    update)     run_upgrade;;
+    *)              echo_red "Unknown command '$1'"; exit 1;;
+esac
+
+eval $(run_context)
+if [ "$RELEASE_ROOT" == "" ]; then
     echo_red "Cannot find root releases directory with 'release-root-env.sh' file. Run in <cluster|namespace|release> directory"
     exit 1
 fi
+
+
 
 if [ ! -z $DRY_RUN ]; then
     DRY_RUN="--dry-run"
@@ -149,65 +241,13 @@ fi
 
 source $RELEASE_ROOT/release-root-env.sh
 
-if ! kubectl config get-contexts --no-headers -o name | grep -q $CONTEXT ; then
-    echo_red "Kube context do not exists : $CONTEXT"
-    exit 1
-fi
 
-if [ -z $RELEASE ]; then
-    depth=1
-    if [ -z $NAMESPACE ]; then
-        depth=2
-    fi
-    for i in $(find $WORK_PATH -mindepth $depth -maxdepth $depth -type d | sed -e "s?$WORK_PATH/??"); do
-        echo_purple "Running release $@ on $i"
-        WORK_PATH=$WORK_PATH/$i bash -$- $0 $@
-        # WORK_PATH=$WORK_PATH/$i . $0 $@
-    done
-
-    exit 0
-fi
-
-if [ -f "$WORK_PATH/release-env.sh" ]; then
-    source "$WORK_PATH/release-env.sh"
-fi
-
-if [[ -z "${CHART:-}" ]]; then
-  echo_yellow "No CHART found in '$WORK_PATH/release-env.sh', creating chart dynamically"
-  readonly TMP_CHART=$(mktemp -d /tmp/.XXXXXX)
-  mkdir $TMP_CHART/templates
-
-  if ! ls $WORK_PATH/*.yaml > /dev/null 2>&1; then
-    echo_red "No manifest yaml file found in '$WORK_PATH' to put in chart"
-    exit 1
-  fi  
-  cp -r $WORK_PATH/*.yaml $TMP_CHART/templates
-
-  cat >$TMP_CHART/Chart.yaml <<EOL
-apiVersion: v1
-name: $RELEASE
-version: 0.1.0
-EOL
-
-  CHART=$TMP_CHART
-fi
+exit 0
 
 
-# TODO rework
-commands=()
-while [ $# -gt 0 ]; do
-    case "$1" in
-    *)          commands+=("$1"); shift;;
-    esac
-done
 
-if [ ${#commands[@]} -eq 0 ]; then
-    commands=()
-fi
-for i in "${commands[@]}"; do
-    case $i in
-        delete|upgrade|diff|template|validate|tiller-upgrade)   run_$i;;
-        update)     run_upgrade;;
-        *)              echo_red "Unknown command '$i'"; exit 1;;
-    esac
-done
+
+
+
+
+
