@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: seafile
+  labels:
+    app: seafile
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: seafile
+  template:
+    metadata:
+      labels:
+        app: seafile
+    spec:
+      containers:
+      - name: seafile
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: SEAFILE_SERVER_HOSTNAME
+          value: "{{ .Values.hostname }}"
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - mountPath: /shared
+            name: seafile
+      volumes:
+      - name: seafile
+        hostPath:
+          path: /data/seafile

@@ -1,0 +1,27 @@
+image:
+  repository: n0rad/alpine-gitserver
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# init repositories if not exists yet
+repositories:
+# - charts
+
+# authorized keys to repos
+authorized_keys:
+# - 
+
+service:
+  type: ClusterIP
+  port: 22
+  annotations: {}
+  labels: {}
+  loadBalancerIP:
+
+persistence:
+  config:
+    storageClass: ""
+    size: 20Gi
+    accessMode: ReadWriteOnce
+
+resources: {}

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+data:
+  authorized_keys: |-
+    {{- range .authorized_keys }}
+    {{ . }}
+    {{- end }}
+  git: |-
+    [url "git://git.host.xz/"]
+    insteadOf = host.xz:/path/to/
+    insteadOf = work:

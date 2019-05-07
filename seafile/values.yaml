@@ -1,0 +1,21 @@
+image:
+  registry: docker.io
+  repository: seafileltd/seafile
+  tag: 6.3.4
+
+
+hostname: seafile.localhost
+tlsSecretName: tls-seafile
+
+servername: lmr
+volumes:
+- name: seafile
+  hostPath:
+    path: /data/seafile
+- name: seahubstatic
+  hostPath:
+    path: /data/seafile/seafile-server-latest/seahub/media
+- name: seahubavatars
+  hostPath:
+    path: /data/seafile/seahub-data/avatars
+  

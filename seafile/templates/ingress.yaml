@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: seafile
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/client-body-buffer-size: 2G
+    # nginx.ingress.kubernetes.io/configuration-snippet: |
+      # proxy_ignore_client_abort on
+spec:
+  tls:
+  - secretName: {{ .Values.tlsSecretName }}
+    hosts:
+    - {{ .Values.hostname }}
+  rules:
+    - host: {{ .Values.hostname }}
+      http:
+        paths:
+        - backend:
+            serviceName: seafile
+            servicePort: 80

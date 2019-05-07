@@ -1,0 +1,19 @@
+image:
+    repository: quay.io/coreos/dnsmasq
+    tag: v0.5.0
+
+
+service:
+    type: NodePort
+    # type: LoadBalancer
+
+hostNetwork: false
+
+dnsmasq:
+    range: 192.168.0.50,192.168.0.99
+    ipxeBootUrl: http://192.168.0.1:8080/boot.ipxe
+    domain: example.local
+    dns:
+        # - 8.8.8.8
+        # - 8.8.4.4
+    # gateway: 192.168.0.1

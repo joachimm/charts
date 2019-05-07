@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec: 
+  replicas: 1
+  strategy:
+    type: Recreate
+    rollingUpdate: ~
+  selector:
+    matchLabels:
+      name: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        name: {{ .Release.Name }}
+      annotations:
+        checksum/attributes: {{ .Values | toString | sha256sum }}
+    spec:
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+
+      hostNetwork: {{ .Values.hostNetwork }}
+      containers:
+        - name: dnsmasq
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: IfNotPresent
+          args:
+              - --no-daemon
+              - --no-hosts
+              - --no-resolv
+              - --no-poll
+              - --port=0
+              - --domain={{ .Values.dnsmasq.domain }}
+              - --bind-interfaces
+              {{- if .Values.dnsmasq.interface }}
+              - --interface={{ .Values.dnsmasq.interface }}
+              {{- end }}
+              {{- if .Values.dnsmasq.listenAddress }}
+              - --listen-address={{ .Values.dnsmasq.listenAddress }}
+              {{- end }}
+              {{- if .Values.dnsmasq.interface }}
+              - --interface={{ .Values.dnsmasq.interface }}
+              {{- end }}
+              {{- if .Values.dnsmasq.gateway }}
+              - --dhcp-option=3,{{ .Values.dnsmasq.gateway }}
+              {{- end }}
+              {{- if .Values.dnsmasq.dns }}
+              - --dhcp-option=6,{{ range $i, $e := .Values.dnsmasq.dns }}{{ if $i }},{{ end }}{{ $e }}{{ end }}
+              {{- end }}
+              - --dhcp-range={{ .Values.dnsmasq.range }}
+              - --enable-tftp
+              - --tftp-root=/var/lib/tftpboot
+              - --dhcp-match=set:bios,option:client-arch,0
+              - --dhcp-boot=tag:bios,undionly.kpxe
+              - --dhcp-match=set:efi32,option:client-arch,6
+              - --dhcp-boot=tag:efi32,ipxe.efi
+              - --dhcp-match=set:efibc,option:client-arch,7
+              - --dhcp-boot=tag:efibc,ipxe.efi
+              - --dhcp-match=set:efi64,option:client-arch,9
+              - --dhcp-boot=tag:efi64,ipxe.efi
+              - --dhcp-userclass=set:ipxe,iPXE
+              - --dhcp-boot=tag:ipxe,{{ .Values.dnsmasq.ipxeBootUrl }}
+              - --dhcp-broadcast
+              - --log-queries
+              - --log-dhcp
+              {{- range .Values.dnsmasq.addresses }}
+              - --address={{ . }}
+              {{- end }}
+              {{- range .Values.dnsmasq.dns }}
+              - --server={{ . }}
+              {{- end }}
+              {{- range .Values.dnsmasq.dhcpHosts }}
+              - --dhcp-host={{ . }}
+              {{- end }}
+
+          # ports:
+          #   - name: dhcp
+          #     containerPort: 67
+          #     port: 67
+          #     protocol: UDP
+
+          #   - name: tftp
+          #     containerPort: 69
+          #     port: 69
+          #     protocol: UDP
