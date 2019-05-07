@@ -13,9 +13,9 @@ dnsmasq:
     range: 192.168.0.50,192.168.0.99
     ipxeBootUrl: http://192.168.0.1:8080/boot.ipxe
     domain: example.local
-    dns:
-        - 8.8.8.8
-        - 8.8.4.4
+    # dns:
+        # - 8.8.8.8
+        # - 8.8.4.4
     # gateway: 192.168.0.1
 
 

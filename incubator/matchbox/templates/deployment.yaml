@@ -23,7 +23,7 @@ spec:
       terminationGracePeriodSeconds: 0
       containers:
         - name: matchbox
-          image: quay.io/coreos/matchbox:latest
+          image: quay.io/coreos/matchbox:v0.7.1
           imagePullPolicy: IfNotPresent
           args:
             - -log-level=debug
@@ -53,8 +53,6 @@ spec:
         - name: rootfs-updater
           image: n0rad/alpine-docker
           imagePullPolicy: IfNotPresent
-          securityContext:              # TODO switch to docker host socket
-            privileged: true
           command: [ sh, /rootfs-update.sh ]
           workingDir: /var/lib/matchbox/assets/root-filesystems
           volumeMounts:
@@ -63,6 +61,8 @@ spec:
             - name: scripts
               mountPath: /rootfs-update.sh
               subPath: rootfs-update.sh
+            - name: dockersock
+              mountPath: /var/run/docker.sock
 
         # run custom scripts like downloading iso images
         {{ range $index, $element := .Values.matchbox.runScripts }}
@@ -104,3 +104,6 @@ spec:
         - name: assets
           hostPath:
             path: /var/lib/matchbox/assets
+        - name: dockersock
+          hostPath:
+            path: /var/run/docker.sock
