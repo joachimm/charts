@@ -29,7 +29,8 @@ while true; do
 
         if [ ! -f "${imageCleanup}.tar.gz" ] || [ "$currentId" != "$id" ]; then
             echo "Updating to new version ${imageName}:${id}"
-            cid=$(docker run --rm -d --entrypoint=/bin/sh ${image} -c "echo '${imageName}:${id}' > /version; sleep 120")
+            imageDate=$(docker inspect --format '{{ index .Config.Labels "date"}}' ${imageName}:${id})
+            cid=$(docker run --rm -d --entrypoint=/bin/sh ${image} -c "echo '${imageName}:${id}' > /version; echo ${imageDate} > /date; sleep 120")
             sleep 2
             docker export ${cid} | gzip -c > ${imageCleanup}-${id}.tar.gz
             old=$(readlink ${imageCleanup}.tar.gz) || true
