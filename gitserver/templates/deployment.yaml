@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ .Release.Name }}
   labels:
     app: {{ template "name" . }}
 spec:
@@ -19,14 +19,14 @@ spec:
         release: {{ .Release.Name }}
     spec:
       containers:
-      - name: plex
+      - name: gitserver
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         lifecycle:
           postStart:
             exec:
               command:
-              - bash
+              - sh
               - -c
               - |
                 #!/bin/bash
@@ -41,23 +41,10 @@ spec:
           - name: ssh
             containerPort: 22
         volumeMounts:
+        - name: config
+          mountPath: /home/git/.ssh/
         - name: data
           mountPath: /data
-        {{- if .Values.persistence.data.subPath }}
-          subPath: {{ .Values.persistence.data.subPath }}
-        {{ end }}
-        - name: config
-          mountPath: /config
-        {{- if .Values.persistence.config.subPath }}
-          subPath: {{ .Values.persistence.config.subPath }}
-        {{ end }}
-        - name: transcode
-          mountPath: /transcode
-        {{- if .Values.persistence.transcode.subPath }}
-          subPath: {{ .Values.persistence.transcode.subPath }}
-        {{ end }}
-        - name: shared
-          mountPath: /shared
         resources:
 {{ toYaml .Values.resources | indent 10 }}
     {{- if .Values.nodeSelector }}
@@ -65,30 +52,9 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
       volumes:
+      - name: config
+        configMap:
+          name: {{ .Release.Name }}-config
       - name: data
         persistentVolumeClaim:
-{{- if .Values.persistence.data.claimName }}
-          claimName: "{{ .Values.persistence.data.claimName }}"
-{{- else }}
-          claimName: "{{ template "fullname" . }}-data"
-{{- end }}
-      - name: config
-        persistentVolumeClaim:
-{{- if .Values.persistence.config.claimName }}
-          claimName: "{{ .Values.persistence.config.claimName }}"
-{{- else }}
-          claimName: "{{ template "fullname" . }}-config"
-{{- end }}
-      - name: transcode
-{{- if .Values.persistence.transcode.enabled }}
-        persistentVolumeClaim:
-{{- if .Values.persistence.transcode.claimName }}
-          claimName: "{{ .Values.persistence.transcode.claimName }}"
-{{- else }}
-          claimName: "{{ template "fullname" . }}-transcode"
-{{- end }}
-{{- else }}
-        emptyDir: {}
-{{- end }}
-      - name: shared
-        emptyDir: {}
+          claimName: {{ template "fullname" . }}-data

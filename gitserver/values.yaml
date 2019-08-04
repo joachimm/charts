@@ -19,9 +19,8 @@ service:
   loadBalancerIP:
 
 persistence:
-  config:
-    storageClass: ""
-    size: 20Gi
-    accessMode: ReadWriteOnce
+  storageClass: ""
+  size: 20Gi
+  accessMode: ReadWriteOnce
 
 resources: {}

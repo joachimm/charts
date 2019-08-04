@@ -1,17 +1,17 @@
 apiVersion: v1
 entries:
   dnsmasq:
-  - created: "2019-08-04T00:49:56.115401022+02:00"
+  - created: "2019-08-04T01:30:36.952011403+02:00"
     digest: 269f2d0f6df7e9ad82a2d219c715f64c3b1dfddf0d4d24b651f873113a050ad9
     name: dnsmasq
     urls:
-    - https://n0rad.github.io/charts/dnsmasq-1.0.0.tgz
+    - http://127.0.0.1:8879/dnsmasq-1.0.0.tgz
     version: 1.0.0
   gitserver:
   - apiVersion: v1
-    created: "2019-08-04T00:48:26.57790295+02:00"
+    created: "2019-08-04T11:56:49.312461248+02:00"
     description: Git with ssh server
-    digest: 4bfd696bd72b8b14be5be7753e9142f1b55f62c7fc18bbf0fa513553a6eaa58e
+    digest: b8fcdba100147114c1e2cf8f3ef3b44fab9ca6b901618763de733de51d2d70fa
     name: gitserver
     urls:
     - https://n0rad.github.io/charts/gitserver-0.0.1.tgz
@@ -19,7 +19,7 @@ entries:
   kube-plex:
   - apiVersion: v1
     appVersion: 1.10.1.4602-f54242b6b
-    created: "2019-08-04T00:48:26.578326975+02:00"
+    created: "2019-08-04T01:30:36.953240101+02:00"
     description: Plex Media Server
     digest: f36e4ce9255e3f9d46232f39a9ad6419b97188770239bb394c534143a2056781
     home: https://plex.tv/
@@ -33,32 +33,32 @@ entries:
     - https://github.com/munnerz/kube-plex
     - https://hub.docker.com/r/plexinc/pms-docker/
     urls:
-    - https://n0rad.github.io/charts/kube-plex-0.2.3.tgz
+    - http://127.0.0.1:8879/kube-plex-0.2.3.tgz
     version: 0.2.3
   matchbox:
-  - created: "2019-08-04T00:48:26.578620871+02:00"
+  - created: "2019-08-04T01:30:36.953503681+02:00"
     digest: 237bfa93eef2964c773faaff28e3548772f8fc2305aa328f05cb6571f9102809
     name: matchbox
     urls:
-    - https://n0rad.github.io/charts/matchbox-1.0.0.tgz
+    - http://127.0.0.1:8879/matchbox-1.0.0.tgz
     version: 1.0.0
   seafile:
   - apiVersion: v1
     appVersion: 6.3.2
-    created: "2019-08-04T00:48:26.578887615+02:00"
+    created: "2019-08-04T01:30:36.953684229+02:00"
     description: 'Seafile - cloud file storage: seafile.com'
     digest: 6d3c66291090f6afac11e04c90b932188a2c7e0c6103601e469bd2245853829d
     name: seafile
     urls:
-    - https://n0rad.github.io/charts/seafile-0.0.1.tgz
+    - http://127.0.0.1:8879/seafile-0.0.1.tgz
     version: 0.0.1
   secrets:
   - apiVersion: v1
-    created: "2019-08-04T00:48:26.579023315+02:00"
+    created: "2019-08-04T01:30:36.953796468+02:00"
     description: Secret ressource
     digest: 627d65338037d80f80d70baf6f9070783addbefc3eccfa3d381f893b52678b49
     name: secrets
     urls:
-    - https://n0rad.github.io/charts/secrets-0.1.0.tgz
+    - http://127.0.0.1:8879/secrets-0.1.0.tgz
     version: 0.1.0
-generated: "2019-08-04T00:49:56.11512172+02:00"
+generated: "2019-08-04T11:56:49.311915232+02:00"

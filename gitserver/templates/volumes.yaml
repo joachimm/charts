@@ -1,21 +1,15 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "fullname" . }}-config
+  name: {{ template "fullname" . }}-data
   labels:
     app: {{ template "name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-    component: repow
 spec:
   accessModes:
-  - {{ .Values.persistence.config.accessMode | quote }}
+  - {{ .Values.persistence.accessMode | quote }}
   resources:
     requests:
-      storage: {{ .Values.persistence.config.size | quote }}
-{{- if .Values.persistence.config.storageClass }}
-  storageClassName: {{ .Values.persistence.config.storageClass | quote }}
-{{- end }}
----
+      storage: {{ .Values.persistence.size | quote }}
+{{- if .Values.persistence.storageClass }}
+  storageClassName: {{ .Values.persistence.storageClass | quote }}
 {{- end }}
