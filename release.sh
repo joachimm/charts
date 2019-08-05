@@ -24,6 +24,7 @@ rebuild() {
 
 if [ -z $1 ]; then
     for d in *; do
+        [ $d == "dist" ] && continue
         [ $d == "docs" ] && continue
         [ -d $d ] || continue 
 

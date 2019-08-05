@@ -17,32 +17,48 @@ spec:
       labels:
         app: {{ template "name" . }}
         release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") $ | sha256sum }}
     spec:
       containers:
       - name: gitserver
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        lifecycle:
-          postStart:
-            exec:
-              command:
-              - sh
-              - -c
-              - |
-                #!/bin/bash
-                cd /data
-                {{- range .repositories }}
-                if [ ! -d "{{.}}" ]; then
-                  git init --bare {{.}}
-                  chown -r git: {{.}}
-                fi
-                {{- end }}
+        command: ["sh"]
+        args:
+        - -c
+        - |
+          if [ ! -f  /data/ssh_host_ecdsa_key ]; then
+            ssh-keygen -f /data/ssh_host_ecdsa_key -N '' -t ecdsa -b 521
+          fi
+
+          cp /home/git/.ssh-volume/authorized_keys /home/git/.ssh/authorized_keys 
+          chmod 600 /home/git/.ssh/authorized_keys
+          chown -R git: /home/git/.ssh /data/*/
+
+          cd /data
+          {{- range .Values.repositories }}
+          if [ ! -d "{{.}}" ]; then
+            git init --bare {{.}}
+            chown -r git: {{.}}
+          fi
+
+          cp /data/ssh_host_ecdsa_key /data/ssh_host_ecdsa_key.pub /etc/ssh
+          exec /usr/sbin/sshd -De
+          {{- end }}
         ports:
           - name: ssh
             containerPort: 22
         volumeMounts:
         - name: config
-          mountPath: /home/git/.ssh/
+          mountPath: /etc/ssh/volume/
+          subpath: ssh_host_ecdsa_key
+        - name: config
+          mountPath: /etc/ssh/volume/
+          subpath: ssh_host_ecdsa_key_pub
+        - name: config
+          mountPath: /home/git/.ssh-volume/
+          subpath: authorized_keys
         - name: data
           mountPath: /data
         resources:

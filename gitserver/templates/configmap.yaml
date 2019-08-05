@@ -6,7 +6,7 @@ metadata:
     app: {{ template "name" . }}
 data:
   authorized_keys: |-
-    {{- range .authorized_keys }}
+    {{- range .Values.authorized_keys }}
     {{ . }}
     {{- end }}
   # git: |-
