@@ -21,7 +21,7 @@ spec:
         paths:
           - path: /
             backend:
-              serviceName: plex-internal
+              serviceName: {{ $serviceName }}
               servicePort: plex
     {{- end -}}
   {{- if .Values.ingress.tls }}
