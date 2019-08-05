@@ -37,6 +37,24 @@ entries:
     version: 0.2.3
   - apiVersion: v1
     appVersion: 1.10.1.4602-f54242b6b
+    created: "2019-08-05T16:21:27.5981939+02:00"
+    description: Plex Media Server
+    digest: 6bdf61be56a17d4d055994b84cf4104d49be3af12db840990d22420354302b21
+    home: https://plex.tv/
+    icon: https://www.plex.tv/wp-content/uploads/2018/01/pmp-icon-1.png
+    keywords:
+    - plex
+    maintainers:
+    - name: munnerz
+    name: kube-plex
+    sources:
+    - https://github.com/munnerz/kube-plex
+    - https://hub.docker.com/r/plexinc/pms-docker/
+    urls:
+    - https://n0rad.github.io/charts/kube-plex-0.2.3-2.tgz
+    version: 0.2.3-2
+  - apiVersion: v1
+    appVersion: 1.10.1.4602-f54242b6b
     created: "2019-08-05T16:17:59.843709268+02:00"
     description: Plex Media Server
     digest: 0140dc989f4cacc2579f1f83ac90921eac9e27ec60b801a30b2fa562378d6a74
@@ -79,4 +97,4 @@ entries:
     urls:
     - https://n0rad.github.io/charts/secrets-0.1.0.tgz
     version: 0.1.0
-generated: "2019-08-05T16:17:59.843055515+02:00"
+generated: "2019-08-05T16:21:27.59747752+02:00"
