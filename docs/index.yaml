@@ -97,4 +97,22 @@ entries:
     urls:
     - https://n0rad.github.io/charts/secrets-0.1.0.tgz
     version: 0.1.0
-generated: "2019-08-05T16:21:27.59747752+02:00"
+  unbound:
+  - apiVersion: v1
+    appVersion: 1.6.7
+    created: "2019-08-06T00:31:12.53593596+02:00"
+    description: Unbound is a fast caching DNS resolver
+    digest: 14b9f6b1e6e369f9c47548b9a15d31fc17035d2a5349dda1ccd306992a2353b7
+    home: https://www.unbound.net/
+    maintainers:
+    - email: betz.mark@gmail.com
+      name: Markbnj
+    name: unbound
+    sources:
+    - http://unbound.nlnetlabs.nl/svn/
+    - https://github.com/Markbnj/unbound-docker
+    - https://github.com/kubernetes/contrib/tree/master/exec-healthz
+    urls:
+    - https://n0rad.github.io/charts/unbound-1.0.1.tgz
+    version: 1.0.1
+generated: "2019-08-06T00:31:12.535446595+02:00"
