@@ -18,10 +18,10 @@ spec:
         checksum/configmap: {{ include (print $.Chart.Name "/templates/configmap.yaml") . | sha256sum }}
         checksum/attributes: {{ .Values | toString | sha256sum }}
     spec:
-      {{- if .Values.nodeSelector }}
+    {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
-      {{- end }}
+    {{- end }}
 
       hostNetwork: {{ .Values.hostNetwork }}
       restartPolicy: Always
