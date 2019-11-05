@@ -52,10 +52,6 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /etc/ssh/volume/
-          subpath: ssh_host_ecdsa_key
-        - name: config
-          mountPath: /etc/ssh/volume/
-          subpath: ssh_host_ecdsa_key_pub
         - name: config
           mountPath: /home/git/.ssh-volume/
           subpath: authorized_keys
