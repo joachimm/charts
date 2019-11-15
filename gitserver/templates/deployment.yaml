@@ -35,13 +35,15 @@ spec:
 
           cp /home/git/.ssh-volume/authorized_keys /home/git/.ssh/authorized_keys 
           chmod 600 /home/git/.ssh/authorized_keys
-          chown -R git: /home/git/.ssh /data/*/
+          chown -R git: /home/git/.ssh
 
           {{- range .Values.repositories }}
           if [ ! -d "{{.}}" ]; then
             git init --bare {{.}}
             chown -R git: {{.}}
           fi
+
+          chown -R git: /data/*/
 
           exec /usr/sbin/sshd -De
           {{- end }}
