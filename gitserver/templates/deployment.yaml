@@ -38,9 +38,9 @@ spec:
           chown -R git: /home/git/.ssh
 
           {{- range .Values.repositories }}
-          if [ ! -d "{{.}}" ]; then
-            git init --bare {{.}}
-            chown -R git: {{.}}
+          if [ ! -d "/data/{{.}}" ]; then
+            git init --bare /data/{{.}}
+            chown -R git: /data/{{.}}
           fi
 
           chown -R git: /data/*/
