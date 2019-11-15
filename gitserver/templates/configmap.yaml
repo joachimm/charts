@@ -9,6 +9,7 @@ data:
     {{- range .Values.authorized_keys }}
     {{ . }}
     {{- end }}
+    
   # git: |-
   #   [url "git://git.host.xz/"]
   #   insteadOf = host.xz:/path/to/

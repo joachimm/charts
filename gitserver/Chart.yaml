@@ -1,4 +1,4 @@
 apiVersion: v1
 description: Git with ssh server
 name: gitserver
-version: 0.0.2
+version: 0.0.3

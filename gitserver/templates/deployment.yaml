@@ -28,29 +28,28 @@ spec:
         args:
         - -c
         - |
-          if [ ! -f  /data/ssh_host_ecdsa_key ]; then
-            ssh-keygen -f /data/ssh_host_ecdsa_key -N '' -t ecdsa -b 521
-          fi
+          cp /etc/ssh/volume/ssh_host_ecdsa_key /etc/ssh
+          cp /etc/ssh/volume/ssh_host_ecdsa_key.pub /etc/ssh
+          chmod 600 /etc/ssh/ssh_host_ecdsa_key
+          chmod 600 /etc/ssh/ssh_host_ecdsa_key.pub
 
           cp /home/git/.ssh-volume/authorized_keys /home/git/.ssh/authorized_keys 
           chmod 600 /home/git/.ssh/authorized_keys
           chown -R git: /home/git/.ssh /data/*/
 
-          cd /data
           {{- range .Values.repositories }}
           if [ ! -d "{{.}}" ]; then
             git init --bare {{.}}
-            chown -r git: {{.}}
+            chown -R git: {{.}}
           fi
 
-          cp /data/ssh_host_ecdsa_key /data/ssh_host_ecdsa_key.pub /etc/ssh
           exec /usr/sbin/sshd -De
           {{- end }}
         ports:
           - name: ssh
             containerPort: 22
         volumeMounts:
-        - name: config
+        - name: secret
           mountPath: /etc/ssh/volume/
         - name: config
           mountPath: /home/git/.ssh-volume/
@@ -64,6 +63,9 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
       volumes:
+      - name: secret
+        secret:
+          secretName: {{ .Release.Name }}-ssh
       - name: config
         configMap:
           name: {{ .Release.Name }}-config
