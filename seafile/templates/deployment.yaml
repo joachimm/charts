@@ -14,6 +14,9 @@ spec:
       labels:
         app: seafile
     spec:
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
       containers:
       - name: seafile
         image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"

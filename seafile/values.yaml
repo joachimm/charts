@@ -19,3 +19,4 @@ volumes:
   hostPath:
     path: /data/seafile/seahub-data/avatars
   
+nodeSelector:
