@@ -9,6 +9,14 @@ entries:
     version: 1.0.0
   gitserver:
   - apiVersion: v1
+    created: "2019-11-15T15:57:54.617023134+01:00"
+    description: Git with ssh server
+    digest: 752ad89f04a54c7587fbd5a347b9baa4c01977d5b22c183412527f314eb72859
+    name: gitserver
+    urls:
+    - https://n0rad.github.io/charts/gitserver-0.0.5.tgz
+    version: 0.0.5
+  - apiVersion: v1
     created: "2019-11-15T15:48:23.718791683+01:00"
     description: Git with ssh server
     digest: 3b4ac804b8f125ac972db525a2508dc4cbcfd71ac63d83da54c8ad366295eff5
@@ -145,4 +153,4 @@ entries:
     urls:
     - https://n0rad.github.io/charts/unbound-1.0.1.tgz
     version: 1.0.1
-generated: "2019-11-15T15:48:23.718255327+01:00"
+generated: "2019-11-15T15:57:54.616570354+01:00"
