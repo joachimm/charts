@@ -119,6 +119,15 @@ entries:
   seafile:
   - apiVersion: v1
     appVersion: 6.3.2
+    created: "2019-11-22T09:30:44.454877516+01:00"
+    description: 'Seafile - cloud file storage: seafile.com'
+    digest: 0f40d73307fc031092c68b209cc82b220d0db52c397427cca844618c239e1b98
+    name: seafile
+    urls:
+    - https://n0rad.github.io/charts/seafile-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v1
+    appVersion: 6.3.2
     created: "2019-11-15T20:22:03.83513361+01:00"
     description: 'Seafile - cloud file storage: seafile.com'
     digest: 51e915ff983f13e096cacb6316db9c096ea46dcb0169c6f6f1fd73ffd0c3a90a
@@ -213,4 +222,4 @@ entries:
     urls:
     - https://n0rad.github.io/charts/unbound-1.0.1.tgz
     version: 1.0.1
-generated: "2019-11-15T21:58:38.32925574+01:00"
+generated: "2019-11-22T09:30:44.453081271+01:00"
