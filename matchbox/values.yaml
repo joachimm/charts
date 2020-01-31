@@ -22,7 +22,7 @@ hostNetwork: false
 mountPath: /var/lib/matchbox
 
 service:
-  type: NodePort
+  type: ClusterIP
   httpNodePort: ~
 
 
