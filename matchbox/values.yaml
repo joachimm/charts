@@ -22,8 +22,12 @@ hostNetwork: false
 mountPath: /var/lib/matchbox
 
 service:
+  port: 8080
   type: ClusterIP
   httpNodePort: ~
+
+ingress:
+  enabled: false
 
 
 matchbox:
