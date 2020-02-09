@@ -15,8 +15,8 @@ metadata:
     {{- end }}
 spec:
   rules:
-    {{- range .Values.ingress.hosts }}
-      {{- $url := splitList "/" . }}
+    {{- range  $index, $element := .Values.ingress.hosts }}
+      {{- $url := splitList "/" $element }}
     - host: {{ first $url }}
       http:
         paths:
