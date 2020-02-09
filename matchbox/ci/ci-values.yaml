@@ -1,0 +1,8 @@
+
+
+ingress:
+  enabled: true
+  hosts:
+  - yopla
+  annotations: 
+    kubernetes.io/ingress.class: "xx"

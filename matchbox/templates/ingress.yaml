@@ -1,4 +1,6 @@
 {{- if .Values.ingress.enabled -}}
+{{- $serviceName := .Release.Name -}}
+{{- $servicePort := .Values.service.port -}}
 {{- if semverCompare ">=1.14" .Capabilities.KubeVersion.GitVersion }}
 apiVersion: networking.k8s.io/v1beta1
 {{ else }}
@@ -22,8 +24,8 @@ spec:
         paths:
           - path: /{{ rest $url | join "/" }}
             backend:
-              serviceName: {{ .Release.Name }}
-              servicePort: {{ .Values.service.port }}
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
     {{- end -}}
   {{- if .Values.ingress.tls }}
   tls:
