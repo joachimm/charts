@@ -104,6 +104,12 @@ entries:
     - https://n0rad.github.io/charts/kube-plex-0.2.3-1.tgz
     version: 0.2.3-1
   matchbox:
+  - created: "2020-02-09T16:29:58.274654616+01:00"
+    digest: baa4ffe081717eeee17e14f400a68571cc3267c7d423f8ca9a90c1a920530c30
+    name: matchbox
+    urls:
+    - https://n0rad.github.io/charts/matchbox-1.0.7.tgz
+    version: 1.0.7
   - created: "2020-02-09T16:01:16.507066532+01:00"
     digest: 0003c5758112548e1aa5a757f7e6917d3293d7caf79a015f24ee9c2a642cfd6d
     name: matchbox
@@ -252,4 +258,4 @@ entries:
     urls:
     - https://n0rad.github.io/charts/unbound-1.0.1.tgz
     version: 1.0.1
-generated: "2020-02-09T16:01:16.506634062+01:00"
+generated: "2020-02-09T16:29:58.274327498+01:00"
