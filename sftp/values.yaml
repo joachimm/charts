@@ -1,0 +1,27 @@
+image:
+  repository: n0rad/alpine-sftp
+  tag: latest
+  pullPolicy: IfNotPresent
+
+
+# authorized keys to repos
+authorized_keys:
+# - 
+
+# ssh-keygen -f ./ssh_host_ecdsa_key -N '' -t ecdsa -b 521
+ssh:
+  ssh_host_ecdsa_key: ""
+  ssh_host_ecdsa_key_pub: ""
+
+
+service:
+  type: ClusterIP
+  port: 22
+  annotations: {}
+  labels: {}
+  loadBalancerIP:
+
+persistence:
+  hostPath: ""
+
+resources: {}

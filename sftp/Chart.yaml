@@ -1,0 +1,4 @@
+apiVersion: v1
+description: sftp
+name: sftp
+version: 0.0.1

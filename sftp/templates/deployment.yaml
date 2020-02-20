@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ template "name" . }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ template "name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") $ | sha256sum }}
+    spec:
+      containers:
+      - name: sftp
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["sh"]
+        args:
+        - -c
+        - |
+          cp /etc/ssh/volume/ssh_host_ecdsa_key /etc/ssh
+          cp /etc/ssh/volume/ssh_host_ecdsa_key.pub /etc/ssh
+          chmod 600 /etc/ssh/ssh_host_ecdsa_key
+          chmod 600 /etc/ssh/ssh_host_ecdsa_key.pub
+
+          cat > /etc/ssh/sshd_config <<EOF
+          Protocol 2
+          HostKey /etc/ssh/ssh_host_ecdsa_key
+
+          UseDNS no
+
+          PermitRootLogin no
+          X11Forwarding no
+          AllowTcpForwarding no
+
+          Subsystem sftp internal-sftp
+          ForceCommand internal-sftp
+          ChrootDirectory /data
+          EOF
+
+          USER="media"
+          adduser -h /home/$USER -u 1000 -D $USER
+          usermod -p "*" $USER
+
+          cp /home/media/.ssh-volume/authorized_keys /home/media/.ssh/authorized_keys 
+          chmod 600 /home/media/.ssh/authorized_keys
+          chown -R media: /home/media/.ssh
+
+          exec /usr/sbin/sshd -De
+        ports:
+          - name: ssh
+            containerPort: 22
+        volumeMounts:
+        - name: secret
+          mountPath: /etc/ssh/volume/
+        - name: config
+          mountPath: /home/media/.ssh-volume/
+          subpath: authorized_keys
+        - name: data
+          mountPath: /data
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      volumes:
+      - name: secret
+        secret:
+          secretName: {{ .Release.Name }}-ssh
+      - name: config
+        configMap:
+          name: {{ .Release.Name }}-config
+      - name: data
+        hostPath:
+          path: {{ .Values.persistence.hostPath }}

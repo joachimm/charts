@@ -189,6 +189,15 @@ entries:
     urls:
     - https://n0rad.github.io/charts/secrets-0.1.0.tgz
     version: 0.1.0
+  sftp:
+  - apiVersion: v1
+    created: "2020-02-20T21:11:51.659896365+01:00"
+    description: sftp
+    digest: dedeb3c80f685e780b8eb35308370bd36f4f67a893005156b0dace074f9cf474
+    name: sftp
+    urls:
+    - https://n0rad.github.io/charts/sftp-0.0.1.tgz
+    version: 0.0.1
   unbound:
   - apiVersion: v1
     appVersion: 1.6.7
@@ -258,4 +267,4 @@ entries:
     urls:
     - https://n0rad.github.io/charts/unbound-1.0.1.tgz
     version: 1.0.1
-generated: "2020-02-09T16:29:58.274327498+01:00"
+generated: "2020-02-20T21:11:51.65944296+01:00"
