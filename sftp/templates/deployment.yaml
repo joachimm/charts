@@ -48,13 +48,15 @@ spec:
           ChrootDirectory /data
           EOF
 
-          USER="media"
-          adduser -h /home/$USER -u 1000 -D $USER
-          usermod -p "*" $USER
+          adduser -h /home/{{ .Values.username }} -u 1000 -D {{ .Values.username }}
+          mkdir -p /home/{{ .Values.username }}/.ssh && chmod 700 /home/{{ .Values.username }}/.ssh && \
+          touch /home/{{ .Values.username }}/.ssh/authorized_keys && chmod 600 /home/{{ .Values.username }}/.ssh/authorized_keys && \
+          chown -R {{ .Values.username }}: /home/{{ .Values.username }}/.ssh && \
+          passwd -u {{ .Values.username }}
 
-          cp /home/media/.ssh-volume/authorized_keys /home/media/.ssh/authorized_keys 
-          chmod 600 /home/media/.ssh/authorized_keys
-          chown -R media: /home/media/.ssh
+          cp /home/{{ .Values.username }}/.ssh-volume/authorized_keys /home/{{ .Values.username }}/.ssh/authorized_keys 
+          chmod 600 /home/{{ .Values.username }}/.ssh/authorized_keys
+          chown -R {{ .Values.username }}: /home/{{ .Values.username }}/.ssh
 
           exec /usr/sbin/sshd -De
         ports:
@@ -64,7 +66,7 @@ spec:
         - name: secret
           mountPath: /etc/ssh/volume/
         - name: config
-          mountPath: /home/media/.ssh-volume/
+          mountPath: /home/{{ .Values.username }}/.ssh-volume/
           subpath: authorized_keys
         - name: data
           mountPath: /data
