@@ -67,7 +67,7 @@ spec:
           mountPath: /etc/ssh/volume/
         - name: config
           mountPath: /home/{{ .Values.username }}/.ssh-volume/
-          subpath: authorized_keys
+          subPath: authorized_keys
         - name: data
           mountPath: /data
         resources:

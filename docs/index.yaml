@@ -191,6 +191,14 @@ entries:
     version: 0.1.0
   sftp:
   - apiVersion: v1
+    created: "2020-06-24T01:30:22.712142791+02:00"
+    description: sftp
+    digest: 62eaf08fefc5808a46a084348bdb2e0bed0773c546feb9e23072a2afd68d2ed4
+    name: sftp
+    urls:
+    - https://n0rad.github.io/charts/sftp-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v1
     created: "2020-02-20T21:53:32.256879279+01:00"
     description: sftp
     digest: abdd4ec4a59248032086fbe29987a57353aa7f15efa6c1312e8e476bb55f658e
@@ -275,4 +283,4 @@ entries:
     urls:
     - https://n0rad.github.io/charts/unbound-1.0.1.tgz
     version: 1.0.1
-generated: "2020-02-20T21:53:32.256384949+01:00"
+generated: "2020-06-24T01:30:22.711641833+02:00"
