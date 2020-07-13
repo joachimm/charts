@@ -32,5 +32,4 @@ spec:
             name: seafile
       volumes:
       - name: seafile
-        hostPath:
-          path: /data/seafile
+        {{ toYaml .Values.volume | indent 8 }}
