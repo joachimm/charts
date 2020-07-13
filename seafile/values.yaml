@@ -10,5 +10,5 @@ tlsSecretName: tls-seafile
 servername: lmr
 
 volume:
-  
+
 nodeSelector:

@@ -32,4 +32,4 @@ spec:
             name: seafile
       volumes:
       - name: seafile
-        {{ toYaml .Values.volume | indent 8 }}
+{{ toYaml .Values.volume | indent 8 }}
