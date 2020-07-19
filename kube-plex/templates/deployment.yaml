@@ -111,6 +111,7 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /data
+          mountPropagation: HostToContainer
         {{- if .Values.persistence.data.subPath }}
           subPath: {{ .Values.persistence.data.subPath }}
         {{ end }}
