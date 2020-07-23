@@ -20,7 +20,7 @@ limitations under the License.
 {{- $dependencies := .Values.dependencies.rbd_provisioner }}
 ---
 kind: Deployment
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 metadata:
   name: ceph-rbd-provisioner
 spec:

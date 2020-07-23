@@ -21,7 +21,7 @@ limitations under the License.
 {{- $dependencies := .Values.dependencies.mds }}
 ---
 kind: Deployment
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 metadata:
   name: ceph-mds
 spec:
