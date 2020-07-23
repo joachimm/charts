@@ -25,6 +25,9 @@ apiVersion: apps/v1
 metadata:
   name: ceph-mds
 spec:
+  selector:
+    matchLabels:
+{{ tuple $envAll "ceph" "mds" | include "helm-toolkit.snippets.kubernetes_metadata_labels" | indent 6 }}
   replicas: 1
   template:
     metadata:

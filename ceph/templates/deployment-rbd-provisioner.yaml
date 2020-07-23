@@ -24,6 +24,9 @@ apiVersion: apps/v1
 metadata:
   name: ceph-rbd-provisioner
 spec:
+  selector:
+    matchLabels:
+{{ tuple $envAll "ceph" "rbd-provisioner" | include "helm-toolkit.snippets.kubernetes_metadata_labels" | indent 6 }}
   replicas: {{ .Values.pod.replicas.rbd_provisioner }}
   strategy:
     type: Recreate

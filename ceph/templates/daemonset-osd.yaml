@@ -25,6 +25,9 @@ apiVersion: apps/v1
 metadata:
   name: ceph-osd
 spec:
+  selector:
+    matchLabels:
+{{ tuple $envAll "ceph" "osd" | include "helm-toolkit.snippets.kubernetes_metadata_labels" | indent 6 }}
   template:
     metadata:
       labels:

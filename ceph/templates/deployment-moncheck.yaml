@@ -24,6 +24,9 @@ apiVersion: apps/v1
 metadata:
   name: ceph-mon-check
 spec:
+  selector:
+    matchLabels:
+{{ tuple $envAll "ceph" "moncheck" | include "helm-toolkit.snippets.kubernetes_metadata_labels" | indent 6 }}
   replicas: {{ .Values.pod.replicas.mon_check }}
   template:
     metadata:

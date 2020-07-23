@@ -25,6 +25,9 @@ apiVersion: apps/v1
 metadata:
   name: ceph-rgw
 spec:
+  selector:
+    matchLabels:
+{{ tuple $envAll "ceph" "rgw" | include "helm-toolkit.snippets.kubernetes_metadata_labels" | indent 6 }}
   replicas: {{ .Values.pod.replicas.rgw }}
   template:
     metadata:
