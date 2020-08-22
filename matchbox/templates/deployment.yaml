@@ -32,10 +32,10 @@ spec:
           imagePullPolicy: IfNotPresent
           args:
             - -log-level=debug
-            - -address=0.0.0.0:8080 # todo listen on one ip only
+            - -address=0.0.0.0:{{ .Values.port }} # todo listen on one ip only
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: {{ .Values.port }}
           resources:
             requests:
               cpu: "50m"

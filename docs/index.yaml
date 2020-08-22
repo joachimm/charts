@@ -1,5 +1,22 @@
 apiVersion: v1
 entries:
+  basic-app:
+  - apiVersion: v1
+    created: "2020-08-23T01:02:31.575817262+02:00"
+    digest: e1a24c523e64691e6b4bffb534475799957754ca7295f76f3be60614c263c545
+    name: basic-app
+    urls:
+    - https://n0rad.github.io/charts/basic-app-0.1.tgz
+    version: "0.1"
+  ceph:
+  - apiVersion: v1
+    created: "2020-08-23T01:02:31.801735294+02:00"
+    description: Ceph-Helm
+    digest: c3985875bc9d8f03ed3bd313b8b4bc45f1de92c078ec83a6dce4a602c22379b4
+    name: ceph
+    urls:
+    - https://n0rad.github.io/charts/ceph-0.1.0.tgz
+    version: 0.1.0
   dnsmasq:
   - created: "2019-08-05T13:52:35.028515423+02:00"
     digest: 515865fa8c541e59c72b72dc5618df6c1533ca0c508d906e2c884b249287ced7
@@ -104,6 +121,13 @@ entries:
     - https://n0rad.github.io/charts/kube-plex-0.2.3-1.tgz
     version: 0.2.3-1
   matchbox:
+  - apiVersion: v1
+    created: "2020-08-23T01:02:32.210491035+02:00"
+    digest: 171f2f57a4520969e7b537070ce12c03451e6db9dae4ec8676b5955de5ba57be
+    name: matchbox
+    urls:
+    - https://n0rad.github.io/charts/matchbox-1.0.8.tgz
+    version: 1.0.8
   - created: "2020-02-09T16:29:58.274654616+01:00"
     digest: baa4ffe081717eeee17e14f400a68571cc3267c7d423f8ca9a90c1a920530c30
     name: matchbox
@@ -309,4 +333,4 @@ entries:
     urls:
     - https://n0rad.github.io/charts/unbound-1.0.1.tgz
     version: 1.0.1
-generated: "2020-07-13T18:38:11.221219982+02:00"
+generated: "2020-08-23T01:02:32.209861867+02:00"
