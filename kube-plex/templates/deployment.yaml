@@ -167,5 +167,4 @@ spec:
 
       - hostPath:
           path: /dev/dri
-          type: CharDevice
         name: dri
