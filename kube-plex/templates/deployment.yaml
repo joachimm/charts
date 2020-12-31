@@ -109,9 +109,6 @@ spec:
           value: "{{ template "fullname" . }}-config"
 {{- end }}
         volumeMounts:
-        - mountPath: /dev/dri
-          name: dri
-
         - name: data
           mountPath: /data
           mountPropagation: HostToContainer
@@ -164,7 +161,3 @@ spec:
 {{- end }}
       - name: shared
         emptyDir: {}
-
-      - hostPath:
-          path: /dev/dri
-        name: dri
