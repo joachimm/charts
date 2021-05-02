@@ -2,8 +2,8 @@ apiVersion: v1
 entries:
   basic-app:
   - apiVersion: v1
-    created: "2021-05-03T01:39:53.699437381+02:00"
-    digest: fb2c2a4a6d6d89c9818b368c2f29e9f6206a330f598dde8137a131949794fc4d
+    created: "2021-05-03T01:52:14.292582267+02:00"
+    digest: 3fda3b065bebc592fed08a0550c2b37e8d2d1f45c70d88b0656dccc7961c28f9
     name: basic-app
     urls:
     - https://n0rad.github.io/charts/basic-app-0.1.tgz
@@ -249,6 +249,14 @@ entries:
     version: 0.1.0
   sftp:
   - apiVersion: v1
+    created: "2021-05-03T01:52:14.736315386+02:00"
+    description: sftp
+    digest: 5428d0f5a3e7e9146dbfb4354fd7f9af9265e734bd8207ac05c77e2346278b12
+    name: sftp
+    urls:
+    - https://n0rad.github.io/charts/sftp-0.0.6.tgz
+    version: 0.0.6
+  - apiVersion: v1
     created: "2021-05-03T01:39:54.170805361+02:00"
     description: sftp
     digest: 4a28fb7df926eec99b3fca4265317705c42fb555356bbb1b9d573ba2b9cafda9
@@ -357,4 +365,4 @@ entries:
     urls:
     - https://n0rad.github.io/charts/unbound-1.0.1.tgz
     version: 1.0.1
-generated: "2021-05-03T01:39:54.17029656+02:00"
+generated: "2021-05-03T01:52:14.735870855+02:00"

@@ -22,7 +22,6 @@ service:
   labels: {}
   loadBalancerIP:
 
-persistence:
-  hostPath: ""
+persistence: {}
 
 resources: {}
