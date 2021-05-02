@@ -83,5 +83,4 @@ spec:
         configMap:
           name: {{ .Release.Name }}-config
       - name: data
-        hostPath:
-          path: {{ .Values.persistence.hostPath }}
+{{ toYaml .Values.persistence | indent 8 }}
