@@ -2,8 +2,8 @@ apiVersion: v1
 entries:
   basic-app:
   - apiVersion: v1
-    created: "2021-05-03T01:52:14.292582267+02:00"
-    digest: 3fda3b065bebc592fed08a0550c2b37e8d2d1f45c70d88b0656dccc7961c28f9
+    created: "2021-05-18T00:12:30.925232678+02:00"
+    digest: efb271d3c61fdc8c511e93446f8c82106803f0bcd521fcbb07543bc0c5db843f
     name: basic-app
     urls:
     - https://n0rad.github.io/charts/basic-app-0.1.tgz
@@ -122,6 +122,13 @@ entries:
     - https://n0rad.github.io/charts/kube-plex-0.2.3-1.tgz
     version: 0.2.3-1
   matchbox:
+  - apiVersion: v1
+    created: "2021-05-18T00:12:31.37189001+02:00"
+    digest: e4015a5c7e6f7e918c10f32c393b26de55f0368373dd6d06105efe915173ce81
+    name: matchbox
+    urls:
+    - https://n0rad.github.io/charts/matchbox-1.0.10.tgz
+    version: 1.0.10
   - apiVersion: v1
     created: "2021-04-11T15:47:41.1512965+02:00"
     digest: 55c5dda33376d3bb382ab52c48f7ceb2d445b5c724033228a5b043eefb74bdbe
@@ -365,4 +372,4 @@ entries:
     urls:
     - https://n0rad.github.io/charts/unbound-1.0.1.tgz
     version: 1.0.1
-generated: "2021-05-03T01:52:14.735870855+02:00"
+generated: "2021-05-18T00:12:31.370924243+02:00"

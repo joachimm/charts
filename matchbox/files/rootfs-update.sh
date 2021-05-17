@@ -13,6 +13,8 @@ images="
 {{- end }}
 "
 
+dockerd &
+
 while true; do
     for image in $(echo ${images} | sort | uniq); do
         if echo ${image} | grep -q -v ":"; then

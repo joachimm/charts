@@ -60,14 +60,14 @@ spec:
           imagePullPolicy: IfNotPresent
           command: [ sh, /rootfs-update.sh ]
           workingDir: /var/lib/matchbox/assets/root-filesystems
+          securityContext:
+            privileged: true
           volumeMounts:
             - name: assets
               mountPath: /var/lib/matchbox/assets
             - name: scripts
               mountPath: /rootfs-update.sh
               subPath: rootfs-update.sh
-            - name: dockersock
-              mountPath: /var/run/docker.sock
 
         # run custom scripts like downloading iso images
         {{ range $index, $element := .Values.matchbox.runScripts }}
@@ -109,6 +109,3 @@ spec:
         - name: assets
           hostPath:
             path: {{ .Values.mountPath }}
-        - name: dockersock
-          hostPath:
-            path: /var/run/docker.sock
