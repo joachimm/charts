@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-ignition
+data:
+  {{- range $index, $element := .Values.matchbox.ignition }}
+  {{ $index }} : |
+    {{- $element | nindent 4 }}
+  {{ end }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-groups
+data:
+  {{- range $index, $element := .Values.matchbox.groups }}
+  {{ $index }}.json : |
+    {{- tpl (toJson $element) $ | nindent 4 }}
+  {{ end }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-profiles
+data:
+  {{- range $index, $element := .Values.matchbox.profiles }}
+  {{ $index }}.json : |
+    {{- tpl (toJson $element) $ | nindent 4 }}
+  {{ end }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-generic
+data:
+  {{- range $index, $element := .Values.matchbox.generic }}
+  {{ $index }} : |
+    {{- tpl $element $ | nindent 4 }}
+  {{ end }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-run-scripts
+data:
+  {{- range $index, $element := .Values.matchbox.runScripts }}
+  {{ $index }} : |
+    {{- tpl $element $ | nindent 4 }}
+  {{ end }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-assets-scripts
+data:
+  {{- range $index, $element := .Values.matchbox.assetsScripts }}
+  {{ $index }} : |
+    {{- tpl $element $ | nindent 4 }}
+  {{ end }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-scripts
+data:
+  rootfs-update.sh: |
+    {{- tpl (.Files.Get "files/rootfs-update.sh" ) . | nindent 4 }}
