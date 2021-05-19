@@ -16,6 +16,7 @@ images:
 image:
   repository: quay.io/coreos/matchbox
   tag: v0.7.1
+  pullPolicy: IfNotPresent
 
 hostNetwork: false
 

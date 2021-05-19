@@ -2,8 +2,8 @@ apiVersion: v1
 entries:
   basic-app:
   - apiVersion: v1
-    created: "2021-05-18T14:32:47.127567978+02:00"
-    digest: 3e4acf110bc374ab8c97bdd355a7d546093cf4f1b6b0f274c7220948caba634d
+    created: "2021-05-19T02:44:57.328909518+02:00"
+    digest: 1fd0a200019f9c81a51c300ad0ae11067c24f479d3c9240829023a713f2d4cdb
     name: basic-app
     urls:
     - https://n0rad.github.io/charts/basic-app-0.1.tgz
@@ -185,6 +185,13 @@ entries:
     urls:
     - https://n0rad.github.io/charts/matchbox-1.0.3.tgz
     version: 1.0.3
+  - apiVersion: v1
+    created: "2021-05-19T02:44:57.847733354+02:00"
+    digest: 0082b845e544c126af91085f9e5f3562b5569ce50f2674dc456ad215aade8263
+    name: matchbox
+    urls:
+    - https://n0rad.github.io/charts/matchbox-1.0.3-2.tgz
+    version: 1.0.3-2
   - apiVersion: v1
     created: "2021-05-18T14:32:47.779679324+02:00"
     digest: b12a9a09afb825387639caabf4e100eb635bdd7caf89bba1beabbb9fdca3ed96
@@ -386,4 +393,4 @@ entries:
     urls:
     - https://n0rad.github.io/charts/unbound-1.0.1.tgz
     version: 1.0.1
-generated: "2021-05-18T14:32:47.778745856+02:00"
+generated: "2021-05-19T02:44:57.846904677+02:00"

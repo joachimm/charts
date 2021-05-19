@@ -28,8 +28,8 @@ spec:
       terminationGracePeriodSeconds: 0
       containers:
         - name: matchbox
-          image: quay.io/coreos/matchbox:v0.7.1
-          imagePullPolicy: IfNotPresent
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
             - -log-level=debug
             - -address=0.0.0.0:8080 # todo listen on one ip only
