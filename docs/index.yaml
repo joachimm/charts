@@ -2,8 +2,8 @@ apiVersion: v1
 entries:
   basic-app:
   - apiVersion: v1
-    created: "2021-07-04T11:39:23.907984953+02:00"
-    digest: aac6a66107dd95ec338892786b4a7ab571a5bfc6ae2764d0fa42852e6c090745
+    created: "2021-07-04T12:11:28.649481978+02:00"
+    digest: 2df9347b48c73b56b49980f077a897e563358a59bffdfefa28a6b5165c902df6
     name: basic-app
     urls:
     - https://n0rad.github.io/charts/basic-app-0.1.tgz
@@ -186,8 +186,8 @@ entries:
     - https://n0rad.github.io/charts/matchbox-1.0.3.tgz
     version: 1.0.3
   - apiVersion: v1
-    created: "2021-07-04T11:39:24.180241297+02:00"
-    digest: 63655ec406464ffa34448fd288a14a87ad7d4149b8370dbfee42a1e0e1fc8976
+    created: "2021-07-04T12:11:28.919531858+02:00"
+    digest: e7b0054a5cee6944c8e682422f9174451d521228d1465302cb465f2b4850e4e0
     name: matchbox
     urls:
     - https://n0rad.github.io/charts/matchbox-1.0.3-2.tgz
@@ -276,6 +276,14 @@ entries:
     - https://n0rad.github.io/charts/secrets-0.1.0.tgz
     version: 0.1.0
   sftp:
+  - apiVersion: v1
+    created: "2021-07-04T12:11:29.136283588+02:00"
+    description: sftp
+    digest: e3574576c32d26e6674f9ef8dc591e1cd0a2cc79a4532a47d2c3ce61c95a0539
+    name: sftp
+    urls:
+    - https://n0rad.github.io/charts/sftp-0.0.8.tgz
+    version: 0.0.8
   - apiVersion: v1
     created: "2021-07-04T11:39:24.391815621+02:00"
     description: sftp
@@ -401,4 +409,4 @@ entries:
     urls:
     - https://n0rad.github.io/charts/unbound-1.0.1.tgz
     version: 1.0.1
-generated: "2021-07-04T11:39:24.391389058+02:00"
+generated: "2021-07-04T12:11:29.135811678+02:00"
