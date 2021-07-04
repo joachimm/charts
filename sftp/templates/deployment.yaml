@@ -48,7 +48,7 @@ spec:
           ChrootDirectory /data
           EOF
 
-          adduser -h /home/{{ .Values.username }} -u 1000 -D {{ .Values.username }}
+          adduser -h /home/{{ .Values.username }} -u {{ .Values.userId }} -D {{ .Values.username }}
           mkdir -p /home/{{ .Values.username }}/.ssh && chmod 700 /home/{{ .Values.username }}/.ssh && \
           touch /home/{{ .Values.username }}/.ssh/authorized_keys && chmod 600 /home/{{ .Values.username }}/.ssh/authorized_keys && \
           chown -R {{ .Values.username }}: /home/{{ .Values.username }}/.ssh && \
