@@ -33,7 +33,9 @@ spec:
               - --no-resolv
               - --no-poll
               - --port=0
+              {{- if .Values.dnsmasq.domain }}
               - --domain={{ .Values.dnsmasq.domain }}
+              {{- end }}
               - --bind-interfaces
               {{- if .Values.dnsmasq.interface }}
               - --interface={{ .Values.dnsmasq.interface }}

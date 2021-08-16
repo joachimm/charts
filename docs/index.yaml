@@ -2,8 +2,8 @@ apiVersion: v1
 entries:
   basic-app:
   - apiVersion: v1
-    created: "2021-07-04T12:11:28.649481978+02:00"
-    digest: 2df9347b48c73b56b49980f077a897e563358a59bffdfefa28a6b5165c902df6
+    created: "2021-08-17T00:04:55.35042219+02:00"
+    digest: fd28016edb31481f5ef4d602ecb29880ce0feadf0909769deeca62df9fcafafe
     name: basic-app
     urls:
     - https://n0rad.github.io/charts/basic-app-0.1.tgz
@@ -18,6 +18,13 @@ entries:
     - https://n0rad.github.io/charts/ceph-0.1.0.tgz
     version: 0.1.0
   dnsmasq:
+  - apiVersion: v1
+    created: "2021-08-17T00:04:55.595999449+02:00"
+    digest: 72f880db1e27fd09283b8010527c08468ea970efa9a50be2fd02a71330eb8fc9
+    name: dnsmasq
+    urls:
+    - https://n0rad.github.io/charts/dnsmasq-1.0.1.tgz
+    version: 1.0.1
   - apiVersion: v1
     created: "2019-08-05T13:52:35.028515423+02:00"
     digest: 515865fa8c541e59c72b72dc5618df6c1533ca0c508d906e2c884b249287ced7
@@ -186,8 +193,8 @@ entries:
     - https://n0rad.github.io/charts/matchbox-1.0.3.tgz
     version: 1.0.3
   - apiVersion: v1
-    created: "2021-07-04T12:11:28.919531858+02:00"
-    digest: e7b0054a5cee6944c8e682422f9174451d521228d1465302cb465f2b4850e4e0
+    created: "2021-08-17T00:04:56.054209845+02:00"
+    digest: b6cb4d8c0bf0848f470d88eab22984f8018debe7520ebaa486e08623e7888813
     name: matchbox
     urls:
     - https://n0rad.github.io/charts/matchbox-1.0.3-2.tgz
@@ -409,4 +416,4 @@ entries:
     urls:
     - https://n0rad.github.io/charts/unbound-1.0.1.tgz
     version: 1.0.1
-generated: "2021-07-04T12:11:29.135811678+02:00"
+generated: "2021-08-17T00:04:56.053684512+02:00"
