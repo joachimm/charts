@@ -44,9 +44,9 @@ spec:
           fi
 
           chown -R git: /data/*/
+          {{- end }}
 
           exec /usr/sbin/sshd -De
-          {{- end }}
         ports:
           - name: ssh
             containerPort: 22
