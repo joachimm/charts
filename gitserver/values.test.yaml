@@ -1,6 +1,8 @@
 repositories:
 - test42
 
+existingSecret: false
+
 ssh:
   ssh_host_ecdsa_key: |
     -----BEGIN OPENSSH PRIVATE KEY-----
