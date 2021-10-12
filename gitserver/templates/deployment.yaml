@@ -60,6 +60,9 @@ spec:
           mountPath: /data
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+    {{- if .Values.additionalContainers }}
+{{ tpl .Values.additionalContainers . | indent 6 }}
+    {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
